@@ -3,7 +3,6 @@ import "firebase/auth";
 import "firebase/database";
 import "firebase/storage";
 
-
 var firebaseConfig = {
     apiKey: "AIzaSyApFdMkmDt5hEhQw1ZQ9IpVz4eBbj6oFiQ",
     authDomain: "react-slack-da52d.firebaseapp.com",
@@ -17,4 +16,4 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-export default "firebase";
+export default firebase;
