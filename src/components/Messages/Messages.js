@@ -8,6 +8,8 @@ import Message from './Message';
 
 class Messages extends Component {
     state = {
+        privateChannel: this.props.isPrivateChannel,
+        privateMessagesRef: firebase.database().ref('privateMessages'),
         messagesRef: firebase.database().ref('messages'),
         messages: [],
         messagesLoading: true,
@@ -34,7 +36,9 @@ class Messages extends Component {
 
     addMessageListener = channelId => {
         let loadedMessages = [];
-        this.state.messagesRef
+        const ref = this.getMessagesRef();
+
+        ref
             .child(channelId)
             .on('child_added', snap => {
                 loadedMessages.push(snap.val());
@@ -53,6 +57,11 @@ class Messages extends Component {
             searchLoading: true
 
         }, () => this.handleSearchMessages());
+    }
+
+    getMessagesRef = () => {
+        const { messagesRef, privateMessagesRef, isPrivateChannel } = this.state;
+        return isPrivateChannel ? privateMessagesRef : messagesRef;
     }
 
     handleSearchMessages = () => {
@@ -99,10 +108,16 @@ class Messages extends Component {
         }
     }
 
-    dislapyChannelName = channel => channel ? `#${channel.name}` : '';
+    dislapyChannelName = channel => {
+        return channel
+            ? `${this.state.privateChannel ? '@' : '#'}${channel.name}:`
+            : '';
+    };
 
     render() {
-        const { messagesRef, messages, channel, user, progressBar, numUniqueUsers, searchTerm, searchResults, searchLoading } = this.state;
+        const { messagesRef, messages, channel, user, progressBar,
+            numUniqueUsers, searchTerm, searchResults,
+            searchLoading, privateChannel } = this.state;
 
         return (
             <React.Fragment>
@@ -111,6 +126,7 @@ class Messages extends Component {
                     numUniqueUsers={numUniqueUsers}
                     handleSearchChange={this.handleSearchChange}
                     searchLoading={searchLoading}
+                    privateChannel={privateChannel}
                 />
 
                 <Segment>
@@ -127,6 +143,8 @@ class Messages extends Component {
                     currentChannel={channel}
                     currentUser={user}
                     isProgressBarVisible={this.isProgressBarVisible}
+                    isPrivateChannel={privateChannel}
+                    getMessagesRef={this.getMessagesRef}
                 />
             </React.Fragment>
         );
