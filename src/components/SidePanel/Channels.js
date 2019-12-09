@@ -163,7 +163,7 @@ class Channels extends Component {
         if (count > 0) return count;
     }
 
-    displayChannels = channels => (
+    displayChannels = channels =>
         channels.length > 0 && channels.map(channel => (
             <Menu.Item
                 key={channel.id}
@@ -178,8 +178,8 @@ class Channels extends Component {
                 # {channel.name}
 
             </Menu.Item>
-        ))
-    )
+        ));
+
 
     openModal = () => this.setState({ modal: true });
 
