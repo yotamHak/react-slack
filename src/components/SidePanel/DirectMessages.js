@@ -125,5 +125,4 @@ class DirectMessages extends Component {
     }
 }
 
-export default connect(null, { setCurrentChannel, setPrivateChannel })
-    (DirectMessages);
+export default connect(null, { setCurrentChannel, setPrivateChannel })(DirectMessages);
