@@ -38,7 +38,7 @@
     "privateMessages": {
       "$uid1": {
         "$uid2": {
-          ".read": "auth != null && (auth.uid1 == auth.uid || auth.uid2 == auth.uid)",
+          ".read": "auth != null && ($uid1 === auth.uid || $uid2 === auth.uid)",
           "$messageId": {
             ".write": "auth != null",
             ".validate": "(newData.hasChildren(['content', 'user', 'timestamp']) && !newData.hasChildren(['image'])) || (newData.hasChildren(['image', 'user', 'timestamp']) && !newData.hasChildren(['content']))",
