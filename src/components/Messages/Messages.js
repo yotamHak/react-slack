@@ -8,26 +8,26 @@ import MessagesHeader from './MessagesHeader';
 import MessageForm from './MessageForm';
 import Message from './Message';
 import Typing from './Typing';
+import Skeleton from './Skeleton';
 
 class Messages extends Component {
     state = {
         privateChannel: this.props.isPrivateChannel,
-        privateMessagesRef: firebase.database().ref('privateMessages'),
-        messagesRef: firebase.database().ref('messages'),
+        privateMessagesRef: firebase.database().ref("privateMessages"),
+        messagesRef: firebase.database().ref("messages"),
         messages: [],
         messagesLoading: true,
         channel: this.props.currentChannel,
         isChannelStarred: false,
         user: this.props.currentUser,
-        usersRef: firebase.database().ref('users'),
-        progressBar: false,
-        numUniqueUsers: '',
-        searchTerm: '',
+        usersRef: firebase.database().ref("users"),
+        numUniqueUsers: "",
+        searchTerm: "",
         searchLoading: false,
         searchResults: [],
-        typingRef: firebase.database().ref('typing'),
+        typingRef: firebase.database().ref("typing"),
         typingUsers: [],
-        connectedRef: firebase.database().ref('.info/connected'),
+        connectedRef: firebase.database().ref(".info/connected"),
     }
 
     componentDidMount() {
@@ -212,21 +212,17 @@ class Messages extends Component {
         this.props.setUserPosts(userPosts);
     }
 
-    displayMessages = messages => (
-        messages.length > 0 && messages.map(message => (
+    isProgressBarVisible = percent => { if (percent > 0) { this.setState({ progressBar: true }) } }
+
+    displayMessages = messages =>
+        messages.length > 0 &&
+        messages.map(message => (
             <Message
                 key={message.timestamp}
                 message={message}
                 user={this.state.user}
             />
-        ))
-    )
-
-    isProgressBarVisible = percent => {
-        if (percent > 0) {
-            this.setState({ progressBar: true })
-        }
-    }
+        ));
 
     dislapyChannelName = channel => {
         return channel
@@ -242,10 +238,20 @@ class Messages extends Component {
         ))
     )
 
+    displayMessageSkeleton = loading =>
+        loading ? (
+            <React.Fragment>
+                {[...Array(10)].map((_, i) => (
+                    <Skeleton key={i} />
+                ))}
+            </React.Fragment>
+        ) : null;
+
     render() {
         const { messagesRef, messages, channel, user, progressBar,
             numUniqueUsers, searchTerm, searchResults,
-            searchLoading, privateChannel, isChannelStarred, typingUsers } = this.state;
+            searchLoading, privateChannel, isChannelStarred, typingUsers,
+            messagesLoading } = this.state;
 
         return (
             <React.Fragment>
@@ -261,6 +267,7 @@ class Messages extends Component {
 
                 <Segment>
                     <Comment.Group className={progressBar ? 'messages__progress' : 'messages'}>
+                        {this.displayMessageSkeleton(messagesLoading)}
                         {searchTerm
                             ? this.displayMessages(searchResults)
                             : this.displayMessages(messages)
